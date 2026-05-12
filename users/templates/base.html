@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library Management</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f6f8;
+            color: #1f2933;
+            font-family: Arial, sans-serif;
+        }
+
+        a {
+            color: #2456a6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #d9e2ec;
+            padding: 14px 24px;
+        }
+
+        .navbar-inner {
+            align-items: center;
+            display: flex;
+            gap: 18px;
+            justify-content: space-between;
+            margin: 0 auto;
+            max-width: 1100px;
+        }
+
+        .brand {
+            color: #102a43;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .container {
+            margin: 0 auto;
+            max-width: 1100px;
+            padding: 28px 24px;
+        }
+
+        .page-header {
+            align-items: center;
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .panel {
+            background: #ffffff;
+            border: 1px solid #d9e2ec;
+            border-radius: 8px;
+            padding: 18px;
+        }
+
+        .filters {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            margin-bottom: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .form-row label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            border: 1px solid #bcccdc;
+            border-radius: 6px;
+            font: inherit;
+            min-height: 40px;
+            padding: 9px 10px;
+            width: 100%;
+        }
+
+        .checkbox-row {
+            align-items: center;
+            display: flex;
+            gap: 8px;
+        }
+
+        .checkbox-input {
+            height: 18px;
+            width: 18px;
+        }
+
+        .button {
+            background: #2456a6;
+            border: 1px solid #2456a6;
+            border-radius: 6px;
+            color: #ffffff;
+            cursor: pointer;
+            display: inline-block;
+            font: inherit;
+            min-height: 40px;
+            padding: 9px 14px;
+            text-align: center;
+        }
+
+        .button:hover {
+            text-decoration: none;
+        }
+
+        .button.secondary {
+            background: #ffffff;
+            color: #2456a6;
+        }
+
+        .button.danger {
+            background: #b42318;
+            border-color: #b42318;
+        }
+
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table th,
+        .table td {
+            border-bottom: 1px solid #d9e2ec;
+            padding: 12px 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .muted {
+            color: #627d98;
+        }
+
+        .messages {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .message {
+            background: #e3f8ef;
+            border: 1px solid #9ae6b4;
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+
+        .errorlist {
+            color: #b42318;
+            margin: 6px 0 0;
+            padding-left: 18px;
+        }
+
+        .pagination {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 18px;
+        }
+
+        .empty-state {
+            padding: 24px;
+            text-align: center;
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .link-button {
+            background: none;
+            border: 0;
+            color: #2456a6;
+            cursor: pointer;
+            font: inherit;
+            padding: 0;
+        }
+
+        @media (max-width: 760px) {
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header,
+            .navbar-inner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="{% url 'home' %}">Library Management</a>
+            <div class="nav-links">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'book_list' %}">Books</a>
+                    <a href="{% url 'category_list' %}">Categories</a>
+                    <span class="muted">{{ user.username }}</span>
+                    <form class="logout-form" method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="link-button" type="submit">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

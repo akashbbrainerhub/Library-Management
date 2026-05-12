@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Books</h1>
+        <p class="muted">Manage books you added to your library.</p>
+    </div>
+    <div class="actions">
+        <a class="button secondary" href="{% url 'category_create' %}">Add Category</a>
+        <a class="button" href="{% url 'book_create' %}">Add Book</a>
+    </div>
+</div>
+
+<form class="panel filters" method="get">
+    <input class="form-control" type="search" name="search" value="{{ search }}" placeholder="Search title, author, ISBN">
+
+    <select class="form-control" name="category">
+        <option value="">All categories</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}" {% if category.id|stringformat:'s' == selected_category %}selected{% endif %}>{{ category.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select class="form-control" name="sort">
+        <option value="created" {% if sort == 'created' %}selected{% endif %}>Created date</option>
+        <option value="title" {% if sort == 'title' %}selected{% endif %}>Title</option>
+        <option value="author" {% if sort == 'author' %}selected{% endif %}>Author</option>
+        <option value="category" {% if sort == 'category' %}selected{% endif %}>Category</option>
+    </select>
+
+    <select class="form-control" name="direction">
+        <option value="asc" {% if direction == 'asc' %}selected{% endif %}>Ascending</option>
+        <option value="desc" {% if direction == 'desc' %}selected{% endif %}>Descending</option>
+    </select>
+
+    <button class="button" type="submit">Apply</button>
+</form>
+
+<div class="panel">
+    {% if page_obj %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>ISBN</th>
+                    <th>Qty</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in page_obj %}
+                    <tr>
+                        <td>
+                            <strong>{{ book.title }}</strong>
+                            <div class="muted">{{ book.description|truncatechars:80 }}</div>
+                        </td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.category.name }}</td>
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.quantity }}</td>
+                        <td>{% if book.is_available %}Available{% else %}Not available{% endif %}</td>
+                        <td>
+                            <div class="actions">
+                                <a href="{% url 'book_update' book.id %}">Edit</a>
+                                <a href="{% url 'book_delete' book.id %}">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No books found.</p>
+            <a class="button" href="{% url 'book_create' %}">Add your first book</a>
+        </div>
+    {% endif %}
+</div>
+
+{% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a class="button secondary" href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">Previous</a>
+        {% endif %}
+        <span class="muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a class="button secondary" href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">Next</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

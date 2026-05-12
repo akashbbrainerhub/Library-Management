@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Categories</h1>
+        <p class="muted">Manage the categories you created.</p>
+    </div>
+    <a class="button" href="{% url 'category_create' %}">Add Category</a>
+</div>
+
+<form class="panel filters" method="get">
+    <input class="form-control" type="search" name="search" value="{{ search }}" placeholder="Search categories">
+    <select class="form-control" name="sort">
+        <option value="name" {% if sort == 'name' %}selected{% endif %}>Name</option>
+        <option value="created" {% if sort == 'created' %}selected{% endif %}>Created date</option>
+        <option value="books" {% if sort == 'books' %}selected{% endif %}>Book count</option>
+    </select>
+    <select class="form-control" name="direction">
+        <option value="asc" {% if direction == 'asc' %}selected{% endif %}>Ascending</option>
+        <option value="desc" {% if direction == 'desc' %}selected{% endif %}>Descending</option>
+    </select>
+    <button class="button" type="submit">Apply</button>
+</form>
+
+<div class="panel">
+    {% if page_obj %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Books</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in page_obj %}
+                    <tr>
+                        <td><strong>{{ category.name }}</strong></td>
+                        <td>{{ category.book_count }}</td>
+                        <td>{{ category.created_at|date:'M d, Y' }}</td>
+                        <td>
+                            <div class="actions">
+                                <a href="{% url 'category_update' category.id %}">Edit</a>
+                                <a href="{% url 'category_delete' category.id %}">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <p>No categories found.</p>
+            <a class="button" href="{% url 'category_create' %}">Add your first category</a>
+        </div>
+    {% endif %}
+</div>
+
+{% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a class="button secondary" href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">Previous</a>
+        {% endif %}
+        <span class="muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a class="button secondary" href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">Next</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

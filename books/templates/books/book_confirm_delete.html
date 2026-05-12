@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Delete Book</h1>
+    <a class="button secondary" href="{% url 'book_list' %}">Back to Books</a>
+</div>
+
+<form class="panel form-grid" method="post">
+    {% csrf_token %}
+    <p>Delete <strong>{{ book.title }}</strong>?</p>
+    <div class="actions">
+        <button class="button danger" type="submit">Delete</button>
+        <a class="button secondary" href="{% url 'book_list' %}">Cancel</a>
+    </div>
+</form>
+{% endblock %}
