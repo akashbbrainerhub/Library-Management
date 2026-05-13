@@ -55,6 +55,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django_mongodb_backend',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -79,12 +80,47 @@ MIDDLEWARE = [
     'users.middleware.middleware.SimpleTimerMiddleware',
 ]
 
+JAZZMIN_UI_TWEAKS = {
+
+    "theme": "darkly",
+
+    "dark_mode_theme": "cyborg",
+
+    "navbar": "navbar-dark navbar-primary",
+
+    "sidebar": "sidebar-dark-primary",
+
+    "accent": "accent-orange",
+
+    "navbar_small_text": False,
+
+    "footer_small_text": False,
+
+    "body_small_text": False,
+
+    "brand_small_text": False,
+
+    "sidebar_nav_small_text": False,
+
+    "sidebar_disable_expand": False,
+
+    "sidebar_nav_child_indent": True,
+
+    "sidebar_nav_compact_style": False,
+
+    "sidebar_nav_legacy_style": False,
+
+    "sidebar_nav_flat_style": False,
+
+    "theme_switcher": True,
+}
+
 ROOT_URLCONF = 'library_system.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

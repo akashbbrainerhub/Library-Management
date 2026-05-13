@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+
+{% block branding %}
+    <h1 id="site-name">
+        HungerHop Control Panel
+    </h1>
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {% extends "admin/base.html" %}
+    <style>
+        .main-sidebar {
+            background: black !important;
+        }
+
+        .brand-link {
+            background: orange !important;
+        }
+    </style>
+{% endblock %}
